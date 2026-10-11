@@ -80,5 +80,20 @@ Her istek için method, endpoint, zaman damgası, durum kodu ve süre hem konsol
 
 ## Testler (Postman)
 
-Postman test ekran görüntüleri `docs/screenshots/` klasöründe yer alır.
-<!-- TODO: Ekleme, listeleme, detay, güncelleme, silme ekran görüntülerini ekle -->
+Tüm istekler [`docs/lonca-api.postman_collection.json`](docs/lonca-api.postman_collection.json) koleksiyonundadır
+(Postman → **Import**). İstekler sırayla çalıştırılmalıdır: ekleme isteği oluşan görevin id'sini `{{taskId}}`
+değişkenine kaydeder, sonraki istekler bu görevi kullanır. Her isteğin durum kodunu doğrulayan testleri vardır.
+
+| # | İstek | Beklenen | Ekran görüntüsü |
+|---|---|---|---|
+| 1 | `POST /tasks` — Görev ekleme | 201 Created | ![](docs/screenshots/01_gorev_ekleme_POST.png) |
+| 2 | `GET /tasks` — Görev listeleme | 200 OK | ![](docs/screenshots/02_gorev_listeleme_GET.png) |
+| 3 | `GET /tasks/:id` — Görev detayı | 200 OK | ![](docs/screenshots/03_gorev_detay_GET.png) |
+| 4 | `PUT /tasks/:id` — Görev güncelleme | 200 OK | ![](docs/screenshots/04_gorev_guncelleme_PUT.png) |
+| 5 | `DELETE /tasks/:id` — Görev silme | 200 OK | ![](docs/screenshots/05_gorev_silme_DELETE.png) |
+| 6 | `POST /tasks` — Başlıksız ekleme | 400 Bad Request | ![](docs/screenshots/06_hata_400_baslik_yok.png) |
+| 7 | `GET /tasks/:id` — Silinmiş görev | 404 Not Found | ![](docs/screenshots/07_hata_404_bulunamadi.png) |
+
+Logger middleware'in bu isteklerdeki konsol çıktısı:
+
+![Logger çıktısı](docs/screenshots/08_logger_konsol.png)

@@ -1,0 +1,118 @@
+{
+  "info": {
+    "name": "Lonca Görev Panosu API",
+    "description": "Lonca API'sinin CRUD testleri. İstekleri sırayla çalıştırın: 01 Ekle isteği oluşan görevin id'sini {{taskId}} değişkenine kaydeder, 03-05 bu görevi kullanır.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "taskId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "01 - Görev Ekleme (POST)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('201 Created döner', () => pm.response.to.have.status(201));",
+          "const task = pm.response.json();",
+          "pm.test('Görev id ve başlık içerir', () => { pm.expect(task.id).to.be.a('number'); pm.expect(task.title).to.eql('Kayıp Ejderha Yumurtasını Bul'); });",
+          "pm.collectionVariables.set('taskId', task.id);"
+        ] }
+      }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Kayıp Ejderha Yumurtasını Bul\",\n  \"description\": \"Kül Dağı'nın eteklerinde kaybolan ejderha yumurtasını bul ve loncaya getir.\",\n  \"priority\": \"high\",\n  \"assignee\": \"Aria Gümüşok\",\n  \"reward\": 300\n}" },
+        "url": { "raw": "{{baseUrl}}/tasks", "host": ["{{baseUrl}}"], "path": ["tasks"] }
+      }
+    },
+    {
+      "name": "02 - Görev Listeleme (GET)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 OK döner', () => pm.response.to.have.status(200));",
+          "pm.test('Görev listesi döner', () => pm.expect(pm.response.json()).to.be.an('array').that.is.not.empty);"
+        ] }
+      }],
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/tasks", "host": ["{{baseUrl}}"], "path": ["tasks"] }
+      }
+    },
+    {
+      "name": "03 - Görev Detayı (GET)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 OK döner', () => pm.response.to.have.status(200));",
+          "pm.test('İstenen görev döner', () => pm.expect(pm.response.json().id).to.eql(Number(pm.collectionVariables.get('taskId'))));"
+        ] }
+      }],
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/tasks/{{taskId}}", "host": ["{{baseUrl}}"], "path": ["tasks", "{{taskId}}"] }
+      }
+    },
+    {
+      "name": "04 - Görev Güncelleme (PUT)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 OK döner', () => pm.response.to.have.status(200));",
+          "const task = pm.response.json();",
+          "pm.test('Durum ve öncelik güncellenir', () => { pm.expect(task.status).to.eql('in_progress'); pm.expect(task.priority).to.eql('critical'); });"
+        ] }
+      }],
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"status\": \"in_progress\",\n  \"priority\": \"critical\"\n}" },
+        "url": { "raw": "{{baseUrl}}/tasks/{{taskId}}", "host": ["{{baseUrl}}"], "path": ["tasks", "{{taskId}}"] }
+      }
+    },
+    {
+      "name": "05 - Görev Silme (DELETE)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 OK döner', () => pm.response.to.have.status(200));",
+          "pm.test('Silme mesajı döner', () => pm.expect(pm.response.json().message).to.eql('Görev silindi'));"
+        ] }
+      }],
+      "request": {
+        "method": "DELETE",
+        "url": { "raw": "{{baseUrl}}/tasks/{{taskId}}", "host": ["{{baseUrl}}"], "path": ["tasks", "{{taskId}}"] }
+      }
+    },
+    {
+      "name": "06 - Hata: Başlıksız Ekleme (400)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('400 Bad Request döner', () => pm.response.to.have.status(400));"
+        ] }
+      }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"description\": \"Başlığı olmayan görev\"\n}" },
+        "url": { "raw": "{{baseUrl}}/tasks", "host": ["{{baseUrl}}"], "path": ["tasks"] }
+      }
+    },
+    {
+      "name": "07 - Hata: Silinen Görev (404)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('404 Not Found döner', () => pm.response.to.have.status(404));"
+        ] }
+      }],
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/tasks/{{taskId}}", "host": ["{{baseUrl}}"], "path": ["tasks", "{{taskId}}"] }
+      }
+    }
+  ]
+}

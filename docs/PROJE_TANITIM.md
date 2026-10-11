@@ -73,7 +73,7 @@ Veriler `src/data/tasks.json` dosyasında saklanır; sunucu yeniden başlatıld�
 ## 6. Test
 
 Beş CRUD endpoint'inin tamamı Postman üzerinden test edilmiştir. Ekran görüntüleri
-`docs/screenshots/` klasöründedir. Kurulum ve çalıştırma adımları için `README.md` dosyasına bakınız.
+`docs/screenshots/` klasöründedir; istekler `docs/lonca-api.postman_collection.json` koleksiyonundadır. Kurulum ve çalıştırma adımları için `README.md` dosyasına bakınız.
 
 ## 7. Proje Ekosistemi
 
