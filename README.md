@@ -10,7 +10,7 @@ Görevler oluşturulur, maceracılara atanır, önceliğe göre sınıflanır ve
 ## Kurulum
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/dckaratas/lonca-api.git
 cd lonca-api
 npm install
 npm start          # veya geliştirme için: npm run dev
