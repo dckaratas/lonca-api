@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "title": "Kuzey Mağarasındaki Goblinleri Temizle",
+    "description": "Köylüler geceleri mağaradan gelen sesler duyuyor. Goblin sürüsünü dağıt.",
+    "priority": "low",
+    "status": "open",
+    "assignee": null,
+    "reward": 50,
+    "createdAt": "2026-10-01T09:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "title": "Kayıp Kervanı Bul",
+    "description": "Doğu yolunda kaybolan tüccar kervanını bul ve güvenle şehre getir.",
+    "priority": "medium",
+    "status": "in_progress",
+    "assignee": "Aria Gümüşok",
+    "reward": 120,
+    "createdAt": "2026-10-02T14:30:00.000Z"
+  },
+  {
+    "id": 3,
+    "title": "Kül Dağı Ejderhasını Uyandırma",
+    "description": "Ejderhanın yuvasından Yıldız Taşı'nı fark edilmeden çal.",
+    "priority": "critical",
+    "status": "open",
+    "assignee": null,
+    "reward": 1000,
+    "createdAt": "2026-10-03T08:15:00.000Z"
+  },
+  {
+    "id": 4,
+    "title": "Simyacıya Ay Çiçeği Topla",
+    "description": "Dolunay gecesi açan 10 adet ay çiçeği topla.",
+    "priority": "low",
+    "status": "completed",
+    "assignee": "Borin Demirsakal",
+    "reward": 30,
+    "createdAt": "2026-09-28T19:45:00.000Z"
+  },
+  {
+    "id": 5,
+    "title": "Batık Tapınağın Lanetini Kaldır",
+    "description": "Tapınaktaki lanetli totemi bul ve rahibeye teslim et.",
+    "priority": "high",
+    "status": "in_progress",
+    "assignee": "Lyra Gecerüzgârı",
+    "reward": 400,
+    "createdAt": "2026-10-05T11:00:00.000Z"
+  }
+]
