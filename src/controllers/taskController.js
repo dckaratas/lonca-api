@@ -6,6 +6,13 @@ const STATUSES = ['open', 'in_progress', 'completed'];
 
 const isNonEmpty = (value) => typeof value === 'string' && value.trim() !== '';
 
+// Metin alanlarına nesne/dizi gibi beklenmeyen tiplerin kaydedilmesini engeller
+function typeError({ description, assignee }) {
+  if (description !== undefined && typeof description !== 'string') return 'description metin olmalıdır';
+  if (assignee !== undefined && assignee !== null && typeof assignee !== 'string') return 'assignee metin veya null olmalıdır';
+  return null;
+}
+
 function findIndex(tasks, id) {
   return tasks.findIndex((t) => t.id === Number(id));
 }
@@ -26,6 +33,8 @@ exports.getById = (req, res) => {
 exports.create = (req, res) => {
   const { title, description = '', priority = 'medium', assignee = null, reward = 0 } = req.body;
   if (!isNonEmpty(title)) return res.status(400).json({ error: 'title alanı zorunludur' });
+  const invalid = typeError(req.body);
+  if (invalid) return res.status(400).json({ error: invalid });
 
   const tasks = readTasks();
   const task = {
@@ -52,6 +61,8 @@ exports.update = (req, res) => {
 
   const { title, description, priority, status, assignee, reward } = req.body;
   if (title !== undefined && !isNonEmpty(title)) return res.status(400).json({ error: 'title boş olamaz' });
+  const invalid = typeError(req.body);
+  if (invalid) return res.status(400).json({ error: invalid });
 
   const task = tasks[index];
   if (title !== undefined) task.title = title;
