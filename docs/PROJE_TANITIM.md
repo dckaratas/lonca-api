@@ -1,7 +1,7 @@
 # Lonca Görev Panosu API — Proje Tanıtım Dokümanı
 
 **Proje:** Node.js ile Backend Programlama — Bitirme Projesi
-**Hazırlayan:** Ad Soyad <!-- TODO: adını yaz -->
+**Hazırlayan:** Doğan Can Karataş
 **Teknolojiler:** Node.js, Express.js, REST API, JSON dosya tabanlı veri
 
 ## 1. Projenin Amacı
