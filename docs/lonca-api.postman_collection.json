@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Lonca Görev Panosu API",
-    "description": "Lonca API'sinin CRUD testleri. İstekleri sırayla çalıştırın: 01 Ekle isteği oluşan görevin id'sini {{taskId}} değişkenine kaydeder, 03-05 bu görevi kullanır.",
+    "description": "Lonca API'sinin CRUD testleri. İstekleri sırayla çalıştırın: 01 Ekle isteği oluşan görevin id'sini {{taskId}} değişkenine kaydeder, 03-05 bu görevi kullanır. 09-18 filtreleme, arama, sayfalama, raporlama ve doğrulama isteklerini içerir.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -112,6 +112,149 @@
       "request": {
         "method": "GET",
         "url": { "raw": "{{baseUrl}}/tasks/{{taskId}}", "host": ["{{baseUrl}}"], "path": ["tasks", "{{taskId}}"] }
+      }
+    },
+    {
+      "name": "09 - Filtre: Duruma Göre (GET)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 OK döner', () => pm.response.to.have.status(200));",
+          "pm.test('Sadece tamamlanan görevler döner', () => pm.expect(pm.response.json().every((t) => t.status === 'completed')).to.be.true);"
+        ] }
+      }],
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/tasks?status=completed", "host": ["{{baseUrl}}"], "path": ["tasks"], "query": [{ "key": "status", "value": "completed" }] }
+      }
+    },
+    {
+      "name": "10 - Filtre: Önceliğe Göre (GET)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 OK döner', () => pm.response.to.have.status(200));",
+          "pm.test('Sadece yüksek öncelikli görevler döner', () => pm.expect(pm.response.json().every((t) => t.priority === 'high')).to.be.true);"
+        ] }
+      }],
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/tasks?priority=high", "host": ["{{baseUrl}}"], "path": ["tasks"], "query": [{ "key": "priority", "value": "high" }] }
+      }
+    },
+    {
+      "name": "11 - Arama: Anahtar Kelime (GET)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 OK döner', () => pm.response.to.have.status(200));",
+          "pm.test('Sonuçlar anahtar kelimeyi içerir', () => pm.expect(pm.response.json().every((t) => (t.title + ' ' + t.description).toLocaleLowerCase('tr').includes('ejderha'))).to.be.true);"
+        ] }
+      }],
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/tasks/search?keyword=ejderha", "host": ["{{baseUrl}}"], "path": ["tasks", "search"], "query": [{ "key": "keyword", "value": "ejderha" }] }
+      }
+    },
+    {
+      "name": "12 - Atanan Kişiye Göre (GET)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 OK döner', () => pm.response.to.have.status(200));",
+          "pm.test('Sadece Aria Gümüşok görevleri döner', () => pm.expect(pm.response.json().every((t) => t.assignee === 'Aria Gümüşok')).to.be.true);"
+        ] }
+      }],
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/tasks/assignee/Aria Gümüşok", "host": ["{{baseUrl}}"], "path": ["tasks", "assignee", "Aria Gümüşok"] }
+      }
+    },
+    {
+      "name": "13 - Sıralama ve Sayfalama (GET)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 OK döner', () => pm.response.to.have.status(200));",
+          "const body = pm.response.json();",
+          "pm.test('En fazla 2 görev ve sayfa bilgisi döner', () => { pm.expect(body.data.length).to.be.at.most(2); pm.expect(body.pagination).to.include({ page: 1, limit: 2 }); });",
+          "pm.test('Ödüle göre azalan sıralı', () => pm.expect(body.data[0].reward).to.be.at.least(body.data[body.data.length - 1].reward));"
+        ] }
+      }],
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/tasks?sort=reward&order=desc&page=1&limit=2", "host": ["{{baseUrl}}"], "path": ["tasks"], "query": [{ "key": "sort", "value": "reward" }, { "key": "order", "value": "desc" }, { "key": "page", "value": "1" }, { "key": "limit", "value": "2" }] }
+      }
+    },
+    {
+      "name": "14 - Rapor: Tamamlanan Görevler (GET)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 OK döner', () => pm.response.to.have.status(200));",
+          "pm.test('Sayı ve görev listesi tutarlı', () => { const r = pm.response.json(); pm.expect(r.count).to.eql(r.tasks.length); });"
+        ] }
+      }],
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/reports/completed", "host": ["{{baseUrl}}"], "path": ["reports", "completed"] }
+      }
+    },
+    {
+      "name": "15 - Rapor: Bekleyen Görevler (GET)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 OK döner', () => pm.response.to.have.status(200));",
+          "pm.test('Tamamlanan görev içermez', () => pm.expect(pm.response.json().tasks.every((t) => t.status !== 'completed')).to.be.true);"
+        ] }
+      }],
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/reports/pending", "host": ["{{baseUrl}}"], "path": ["reports", "pending"] }
+      }
+    },
+    {
+      "name": "16 - Rapor: Genel Özet (GET)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 OK döner', () => pm.response.to.have.status(200));",
+          "pm.test('Ödül toplamları tutarlı', () => { const r = pm.response.json().rewards; pm.expect(r.paid + r.pending).to.eql(r.total); });"
+        ] }
+      }],
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/reports/summary", "host": ["{{baseUrl}}"], "path": ["reports", "summary"] }
+      }
+    },
+    {
+      "name": "17 - Hata: Geçersiz Görev Verisi (400)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('400 Bad Request döner', () => pm.response.to.have.status(400));",
+          "pm.test('Tüm hatalar listelenir', () => pm.expect(pm.response.json().details).to.have.lengthOf(2));"
+        ] }
+      }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Görev\",\n  \"priority\": \"urgent\",\n  \"reward\": -10\n}" },
+        "url": { "raw": "{{baseUrl}}/tasks", "host": ["{{baseUrl}}"], "path": ["tasks"] }
+      }
+    },
+    {
+      "name": "18 - Hata: Geçersiz Filtre (400)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('400 Bad Request döner', () => pm.response.to.have.status(400));"
+        ] }
+      }],
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/tasks?status=done", "host": ["{{baseUrl}}"], "path": ["tasks"], "query": [{ "key": "status", "value": "done" }] }
       }
     }
   ]

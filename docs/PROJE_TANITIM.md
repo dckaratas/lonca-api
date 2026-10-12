@@ -36,8 +36,19 @@ görev panosuna asar. Her görev bir maceracıya atanır, önceliği belirlenir 
 - **Görev silme** — görevi sistemden kaldırma (`DELETE /tasks/:id`)
 - **Logger middleware** — her isteğin method, endpoint, zaman damgası, durum kodu ve süresini
   konsola ve `logs/requests.log` dosyasına kaydeder
-- **Temel hata yönetimi** — eksik başlıkta `400`, bulunamayan görevde ve tanımsız endpoint'te `404`,
+- **Temel hata yönetimi** — geçersiz veride `400`, bulunamayan görevde ve tanımsız endpoint'te `404`,
   beklenmeyen hatalarda `500` döner
+
+### Ek özellikler (yönergedeki pratik çalışmalar)
+
+- **Filtreleme, arama ve sayfalama** — duruma (`?status=`) ve önceliğe (`?priority=`) göre filtre,
+  başlık/açıklamada anahtar kelime araması (`/tasks/search?keyword=`), maceracıya göre görevler
+  (`/tasks/assignee/:name`), sıralama (`?sort=createdAt`) ve sayfalama (`?page=1&limit=10`)
+- **Doğrulama middleware'i** — `title`, `description`, `priority`, `status`, `assignee` ve `reward` alanlarını,
+  ayrıca `:id` ve sorgu parametrelerini controller'dan önce kontrol eder; hatalı istekte tüm hataları listeleyen `400` döner
+- **Raporlama** — tamamlanan görevler (`/reports/completed`), bekleyen görevler (`/reports/pending`) ve
+  durum/öncelik dağılımı, tamamlanma oranı, ödül toplamları ile maceracı istatistiklerini veren özet (`/reports/summary`)
+- **Dokümantasyon** — [API dokümantasyonu](API.md), [test dokümantasyonu](TEST.md) ve [kullanım kılavuzu](KULLANIM_KILAVUZU.md)
 
 ## 4. Veri Modeli
 
@@ -59,21 +70,28 @@ Veriler `src/data/tasks.json` dosyasında saklanır; sunucu yeniden başlatıld�
 ## 5. Mimari
 
 ```
-İstek → express.json() → Logger middleware → /tasks router → taskController → tasks.json
+İstek → express.json() → Logger → router → doğrulama middleware'i → controller → tasks.json
+                                      ├─ /tasks   → validateTask → taskController
+                                      └─ /reports →                reportController
 ```
 
 | Katman | Dosya | Görevi |
 |---|---|---|
-| Giriş noktası | `src/server.js` | Express uygulaması, middleware'ler, 404 ve hata yakalayıcı |
-| Routing | `src/routes/taskRoutes.js` | Endpoint → controller eşlemesi |
-| Controller | `src/controllers/taskController.js` | CRUD iş mantığı ve doğrulama |
+| Giriş noktası | `src/server.js` | Sunucuyu belirtilen portta başlatır |
+| Uygulama | `src/app.js` | Express uygulaması, middleware'ler, 404 ve hata yakalayıcı |
+| Routing | `src/routes/taskRoutes.js`, `reportRoutes.js` | Endpoint → middleware → controller eşlemesi |
+| Controller | `src/controllers/taskController.js` | CRUD, filtreleme, arama, sıralama, sayfalama |
+| Controller | `src/controllers/reportController.js` | Rapor hesaplamaları |
 | Middleware | `src/middleware/logger.js` | İstek loglama |
+| Middleware | `src/middleware/validateTask.js` | Gövde, id ve sorgu parametresi doğrulama |
 | Veri | `src/data/store.js` | JSON dosyası okuma/yazma |
 
 ## 6. Test
 
-Beş CRUD endpoint'inin tamamı Postman üzerinden test edilmiştir. Ekran görüntüleri
-`docs/screenshots/` klasöründedir; istekler `docs/lonca-api.postman_collection.json` koleksiyonundadır. Kurulum ve çalıştırma adımları için `README.md` dosyasına bakınız.
+Tüm endpoint'ler Postman üzerinden test edilmiştir (17 istek). Ekran görüntüleri
+`docs/screenshots/` klasöründedir; istekler `docs/lonca-api.postman_collection.json` koleksiyonundadır.
+Ayrıca `npm test` ile çalışan 11 otomatik test bulunur. Test senaryolarının tamamı
+[test dokümantasyonunda](TEST.md), kurulum ve kullanım adımları [kullanım kılavuzunda](KULLANIM_KILAVUZU.md) yer alır.
 
 ## 7. Proje Ekosistemi
 

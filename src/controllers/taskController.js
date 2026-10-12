@@ -1,26 +1,63 @@
 const { readTasks, writeTasks } = require('../data/store');
+const { PRIORITIES } = require('../constants');
 
-// Öncelik, arayüzde lonca rütbesi olarak gösterilir: critical=S, high=A, medium=B, low=C
-const PRIORITIES = ['critical', 'high', 'medium', 'low'];
-const STATUSES = ['open', 'in_progress', 'completed'];
+// Alan doğrulaması middleware/validateTask.js'te yapılır; buraya gelen veri geçerlidir.
 
-const isNonEmpty = (value) => typeof value === 'string' && value.trim() !== '';
-
-// Metin alanlarına nesne/dizi gibi beklenmeyen tiplerin kaydedilmesini engeller
-function typeError({ description, assignee }) {
-  if (description !== undefined && typeof description !== 'string') return 'description metin olmalıdır';
-  if (assignee !== undefined && assignee !== null && typeof assignee !== 'string') return 'assignee metin veya null olmalıdır';
-  return null;
-}
+const normalize = (text) => text.toLocaleLowerCase('tr');
 
 function findIndex(tasks, id) {
   return tasks.findIndex((t) => t.id === Number(id));
 }
 
-// GET /tasks
-exports.getAll = (req, res) => {
-  res.json(readTasks());
+// Sıralama değerleri; priority önem sırasına göre (low=1 … critical=4) karşılaştırılır
+const sortValue = {
+  createdAt: (t) => t.createdAt,
+  reward: (t) => t.reward,
+  priority: (t) => PRIORITIES.length - PRIORITIES.indexOf(t.priority),
+  title: (t) => normalize(t.title),
 };
+
+// Sorgu parametrelerine göre filtreler, sıralar ve istenirse sayfalar
+function listTasks(res, query) {
+  const { status, priority, assignee, keyword, sort, order = 'asc', page, limit } = query;
+  let tasks = readTasks();
+
+  if (status) tasks = tasks.filter((t) => t.status === status);
+  if (priority) tasks = tasks.filter((t) => t.priority === priority);
+  if (assignee) tasks = tasks.filter((t) => t.assignee && normalize(t.assignee) === normalize(assignee));
+  if (keyword) {
+    const word = normalize(keyword.trim());
+    tasks = tasks.filter((t) => normalize(`${t.title} ${t.description}`).includes(word));
+  }
+
+  if (sort) {
+    const value = sortValue[sort];
+    const direction = order === 'desc' ? -1 : 1;
+    tasks.sort((a, b) => (value(a) > value(b) ? 1 : value(a) < value(b) ? -1 : 0) * direction);
+  }
+
+  // page/limit verilmezse düz liste döner (web paneli bu biçimi kullanır)
+  if (page === undefined && limit === undefined) return res.json(tasks);
+
+  const pageNo = Number(page) || 1;
+  const size = Number(limit) || 10;
+  res.json({
+    data: tasks.slice((pageNo - 1) * size, pageNo * size),
+    pagination: { page: pageNo, limit: size, total: tasks.length, totalPages: Math.ceil(tasks.length / size) },
+  });
+}
+
+// GET /tasks?status=&priority=&assignee=&keyword=&sort=&order=&page=&limit=
+exports.getAll = (req, res) => listTasks(res, req.query);
+
+// GET /tasks/search?keyword=
+exports.search = (req, res) => {
+  if (req.query.keyword === undefined) return res.status(400).json({ error: 'keyword parametresi zorunludur' });
+  listTasks(res, req.query);
+};
+
+// GET /tasks/assignee/:name
+exports.getByAssignee = (req, res) => listTasks(res, { ...req.query, assignee: req.params.name });
 
 // GET /tasks/:id
 exports.getById = (req, res) => {
@@ -32,19 +69,16 @@ exports.getById = (req, res) => {
 // POST /tasks
 exports.create = (req, res) => {
   const { title, description = '', priority = 'medium', assignee = null, reward = 0 } = req.body;
-  if (!isNonEmpty(title)) return res.status(400).json({ error: 'title alanı zorunludur' });
-  const invalid = typeError(req.body);
-  if (invalid) return res.status(400).json({ error: invalid });
 
   const tasks = readTasks();
   const task = {
     id: tasks.length ? Math.max(...tasks.map((t) => t.id)) + 1 : 1,
-    title,
+    title: title.trim(),
     description,
-    priority: PRIORITIES.includes(priority) ? priority : 'medium',
+    priority,
     status: 'open',
     assignee,
-    reward: Number(reward) || 0,
+    reward,
     createdAt: new Date().toISOString(),
   };
 
@@ -60,17 +94,13 @@ exports.update = (req, res) => {
   if (index === -1) return res.status(404).json({ error: 'Görev bulunamadı' });
 
   const { title, description, priority, status, assignee, reward } = req.body;
-  if (title !== undefined && !isNonEmpty(title)) return res.status(400).json({ error: 'title boş olamaz' });
-  const invalid = typeError(req.body);
-  if (invalid) return res.status(400).json({ error: invalid });
-
   const task = tasks[index];
-  if (title !== undefined) task.title = title;
+  if (title !== undefined) task.title = title.trim();
   if (description !== undefined) task.description = description;
-  if (PRIORITIES.includes(priority)) task.priority = priority;
-  if (STATUSES.includes(status)) task.status = status;
+  if (priority !== undefined) task.priority = priority;
+  if (status !== undefined) task.status = status;
   if (assignee !== undefined) task.assignee = assignee;
-  if (reward !== undefined) task.reward = Number(reward) || 0;
+  if (reward !== undefined) task.reward = reward;
   task.updatedAt = new Date().toISOString();
 
   writeTasks(tasks);

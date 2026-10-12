@@ -6,6 +6,8 @@ fs.mkdirSync(path.dirname(LOG_FILE), { recursive: true });
 
 // Her isteğin method, endpoint, zaman damgası, durum kodu ve süresini kaydeder
 function logger(req, res, next) {
+  if (process.env.NODE_ENV === 'test') return next(); // otomatik testlerde log tutulmaz
+
   const start = Date.now();
 
   res.on('finish', () => {
