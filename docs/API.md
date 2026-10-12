@@ -1,4 +1,4 @@
-# Lonca Görev Panosu API — API Dokümantasyonu
+# Lonca Görev Panosu API — API Tasarım Dokümanı ve Dokümantasyonu
 
 **Temel adres:** `http://localhost:3000`
 **Veri biçimi:** İstek ve yanıt gövdeleri JSON'dur (`Content-Type: application/json`).

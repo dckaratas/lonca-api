@@ -8,9 +8,12 @@ Görevler oluşturulur, maceracılara atanır, önceliğe göre sınıflanır ve
 | Doküman | İçerik |
 |---|---|
 | 📄 [Proje Tanıtım Dokümanı](docs/PROJE_TANITIM.md) | Amaç, senaryo, mimari |
-| 📘 [API Dokümantasyonu](docs/API.md) | Tüm uç noktalar, istek/yanıt örnekleri, doğrulama kuralları, hata kodları |
+| 🗂️ [Veri Modeli Tasarımı](docs/VERI_MODELI.md) | Görev varlığı, alanlar, kurallar, durum akışı, SQL karşılığı |
+| 📘 [API Tasarım Dokümanı](docs/API.md) | Tüm uç noktalar, istek/yanıt örnekleri, doğrulama kuralları, hata kodları |
 | 🧪 [Test Dokümantasyonu](docs/TEST.md) | Otomatik testler ve Postman test senaryoları |
 | 🧭 [Kullanım Kılavuzu](docs/KULLANIM_KILAVUZU.md) | Adım adım kurulum, sık yapılan işlemler, sorun giderme |
+
+**Teslim formu dosyaları** ([`docs/teslim/`](docs/teslim/)): proje tanıtım dokümanı (2 sayfa) ve Postman test ekran görüntüleri, PDF ve Word olarak.
 
 ## Kurulum
 

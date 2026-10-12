@@ -66,6 +66,7 @@ görev panosuna asar. Her görev bir maceracıya atanır, önceliği belirlenir 
 ```
 
 Veriler `src/data/tasks.json` dosyasında saklanır; sunucu yeniden başlatıldığında kaybolmaz.
+Alan kuralları, durum akışı ve SQL karşılığı için: [Veri Modeli Tasarımı](VERI_MODELI.md).
 
 ## 5. Mimari
 
