@@ -13,7 +13,7 @@ Görevler oluşturulur, maceracılara atanır, önceliğe göre sınıflanır ve
 | 🧪 [Test Dokümantasyonu](docs/TEST.md) | Otomatik testler ve Postman test senaryoları |
 | 🧭 [Kullanım Kılavuzu](docs/KULLANIM_KILAVUZU.md) | Adım adım kurulum, sık yapılan işlemler, sorun giderme |
 
-**Teslim formu dosyaları** ([`docs/teslim/`](docs/teslim/)): proje tanıtım dokümanı (2 sayfa) ve Postman test ekran görüntüleri, PDF ve Word olarak.
+**Teslim formu dosyaları** ([`docs/teslim/`](docs/teslim/)): tasarım çıktısı (tanıtım + veri modeli + API tasarımı, tek PDF), kurulum notu (PDF), Postman test ekran görüntüleri (tek görsel ve PDF).
 
 ## Kurulum
 
@@ -30,7 +30,7 @@ Sunucu varsayılan olarak `http://localhost:3000` adresinde çalışır.
 | Ortam değişkeni | Varsayılan | Açıklama |
 |---|---|---|
 | `PORT` | `3000` | Sunucu portu |
-| `CORS_ORIGIN` | `*` | API'ye erişebilecek web adresi. API internete açılacaksa web panelinin adresiyle kısıtlanmalıdır (ör. `https://lonca.netlify.app`). |
+| `CORS_ORIGIN` | `*` | API'ye erişebilecek web adresi. API internete açılacaksa web panelinin adresiyle kısıtlanmalıdır (ör. `https://lonca-web.netlify.app`). |
 
 > **Not:** API'de kimlik doğrulama yoktur; eğitim projesi olarak yerel kullanım içindir.
 
