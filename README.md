@@ -163,17 +163,12 @@ Logger middleware'in bu isteklerdeki konsol çıktısı:
 
 ![Logger çıktısı](docs/screenshots/08_logger_konsol.png)
 
-Filtreleme, arama, raporlama ve doğrulama istekleri:
+Filtreleme, arama, sayfalama ve raporlama isteklerinden örnekler
+(koleksiyondaki diğer istekler 10, 12, 14, 15, 17 ve 18'dir):
 
 | # | İstek | Beklenen | Ekran görüntüsü |
 |---|---|---|---|
-| 9 | `GET /tasks?status=completed` | 200 OK | `09_filtre_durum_GET.png` |
-| 10 | `GET /tasks?priority=high` | 200 OK | `10_filtre_oncelik_GET.png` |
-| 11 | `GET /tasks/search?keyword=ejderha` | 200 OK | `11_arama_GET.png` |
-| 12 | `GET /tasks/assignee/Aria Gümüşok` | 200 OK | `12_atanan_kisi_GET.png` |
-| 13 | `GET /tasks?sort=reward&order=desc&page=1&limit=2` | 200 OK | `13_siralama_sayfalama_GET.png` |
-| 14 | `GET /reports/completed` | 200 OK | `14_rapor_tamamlanan_GET.png` |
-| 15 | `GET /reports/pending` | 200 OK | `15_rapor_bekleyen_GET.png` |
-| 16 | `GET /reports/summary` | 200 OK | `16_rapor_ozet_GET.png` |
-| 17 | `POST /tasks` — Geçersiz öncelik ve ödül | 400 Bad Request | `17_hata_400_dogrulama.png` |
-| 18 | `GET /tasks?status=done` — Geçersiz filtre | 400 Bad Request | `18_hata_400_gecersiz_filtre.png` |
+| 9 | `GET /tasks?status=completed` — Duruma göre filtre | 200 OK | ![](docs/screenshots/09_filtre_durum_GET.png) |
+| 11 | `GET /tasks/search?keyword=ejderha` — Arama | 200 OK | ![](docs/screenshots/11_arama_GET.png) |
+| 13 | `GET /tasks?sort=reward&order=desc&page=1&limit=2` — Sıralama ve sayfalama | 200 OK | ![](docs/screenshots/13_siralama_sayfalama_GET.png) |
+| 16 | `GET /reports/summary` — Genel özet raporu | 200 OK | ![](docs/screenshots/16_rapor_ozet_GET.png) |

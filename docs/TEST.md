@@ -76,17 +76,17 @@ Koleksiyon: [`lonca-api.postman_collection.json`](lonca-api.postman_collection.j
 | # | İstek | Beklenen | Postman testi | Ekran görüntüsü |
 |---|---|---|---|---|
 | 09 | `GET /tasks?status=completed` | 200 | Tüm sonuçlar `completed` | `09_filtre_durum_GET.png` |
-| 10 | `GET /tasks?priority=high` | 200 | Tüm sonuçlar `high` | `10_filtre_oncelik_GET.png` |
+| 10 | `GET /tasks?priority=high` | 200 | Tüm sonuçlar `high` | — |
 | 11 | `GET /tasks/search?keyword=ejderha` | 200 | Sonuçlar kelimeyi içerir | `11_arama_GET.png` |
-| 12 | `GET /tasks/assignee/Aria Gümüşok` | 200 | Tüm sonuçlar Aria'ya ait | `12_atanan_kisi_GET.png` |
+| 12 | `GET /tasks/assignee/Aria Gümüşok` | 200 | Tüm sonuçlar Aria'ya ait | — |
 | 13 | `GET /tasks?sort=reward&order=desc&page=1&limit=2` | 200 | En fazla 2 kayıt, sayfa bilgisi, azalan ödül | `13_siralama_sayfalama_GET.png` |
-| 14 | `GET /reports/completed` | 200 | `count` = görev sayısı | `14_rapor_tamamlanan_GET.png` |
-| 15 | `GET /reports/pending` | 200 | Tamamlanmış görev içermez | `15_rapor_bekleyen_GET.png` |
+| 14 | `GET /reports/completed` | 200 | `count` = görev sayısı | — |
+| 15 | `GET /reports/pending` | 200 | Tamamlanmış görev içermez | — |
 | 16 | `GET /reports/summary` | 200 | Ödenen + bekleyen = toplam ödül | `16_rapor_ozet_GET.png` |
-| 17 | `POST /tasks` (geçersiz öncelik ve ödül) | 400 | `details` dizisinde 2 hata | `17_hata_400_dogrulama.png` |
-| 18 | `GET /tasks?status=done` | 400 | Durum kodu | `18_hata_400_gecersiz_filtre.png` |
+| 17 | `POST /tasks` (geçersiz öncelik ve ödül) | 400 | `details` dizisinde 2 hata | — |
+| 18 | `GET /tasks?status=done` | 400 | Durum kodu | — |
 
-Ekran görüntüleri `docs/screenshots/` klasöründedir.
+Ekran görüntüleri `docs/screenshots/` klasöründedir. 09–18 arasından örnek olarak 09, 11, 13 ve 16 numaralı isteklerin görüntüsü alınmıştır; diğer istekler koleksiyonda hazırdır ve aynı durumlar otomatik testlerle de doğrulanır.
 
 ## 3. Elle kontrol edilen durumlar
 
